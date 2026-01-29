@@ -4,14 +4,24 @@ import { Product } from './types';
 export const PRODUCTS: Product[] = [
   {
     id: '1',
-    name: 'Zenith Pods Pro',
-    description: 'Seamless wireless earbuds with zero-latency gaming mode and ultra-transparent ambient mode.',
-    price: 21500,
+    name: 'Mazzé Buds Air Pro',
+    description: 'Ultra-lightweight earbuds with studio-grade audio, active noise cancellation, and a sleek pebble charging case.',
+    price: 12500,
     category: 'Earbuds',
-    image: 'https://images.unsplash.com/photo-1588421357574-87938a86fa28?auto=format&fit=crop&q=80&w=800',
-    features: ['Dual micro-drivers', 'IPX5 Sweat resistance', 'Hybrid ANC', 'Voice assistant sync'],
-    specs: { 'Latency': '<40ms', 'Driver': 'Dual 6mm Balance Armature', 'Battery': '30h total with case' },
+    image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&q=80&w=800',
+    features: ['ANC 45dB', 'Transparency Mode', '40h Total Playtime', 'IPX5 Water Resistant'],
+    specs: { 'Driver': '11mm Graphene', 'Bluetooth': '5.4', 'Latency': '40ms' },
     isFeatured: true
+  },
+  {
+    id: '11',
+    name: 'Mazzé Buds Core',
+    description: 'Essential audio experience with powerful bass and crystal clear calls for your daily commute.',
+    price: 6500,
+    category: 'Earbuds',
+    image: 'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&q=80&w=800',
+    features: ['Deep Bass', 'Dual Mic ENC', '24h Battery', 'Touch Controls'],
+    specs: { 'Driver': '10mm Dynamic', 'Bluetooth': '5.3', 'Charging': 'USB-C' }
   },
   {
     id: '2',
@@ -51,76 +61,76 @@ export const PRODUCTS: Product[] = [
     price: 55000,
     category: 'Watches',
     image: 'https://images.unsplash.com/photo-1524592091214-8c6ca0ad061a?auto=format&fit=crop&q=80&w=800',
-    features: ['Swiss Movement', 'Scratch-proof sapphire', 'Brushed steel case', 'Leather strap'],
-    specs: { 'Movement': 'Automatic Caliber', 'Case': '38mm', 'Water Resistance': '100m' }
+    features: ['Swiss Movement', 'Sapphire Crystal', '10ATM Water Resistance', 'Stainless Steel 316L'],
+    specs: { 'Movement': 'Automatic Caliber', 'Case Size': '40mm', 'Strap': 'Genuine Italian Leather' }
   },
   {
     id: '6',
-    name: 'Mazzé Nexus 1',
-    description: 'The ultimate minimalist mobile device focused on productivity and privacy.',
-    price: 89000,
+    name: 'Nexus Phone 1',
+    description: 'The ultimate smartphone experience with a minimalist OS and pro-grade camera system.',
+    price: 115000,
     category: 'Mobile Phones',
     image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=800',
-    features: ['OLED Display', 'Privacy switch', 'Zero-bloat OS', 'Aluminum unibody'],
-    specs: { 'Display': '6.1" OLED', 'Processor': 'Studio Core X1', 'Storage': '256GB' }
+    features: ['Pure OS', '50MP Triple Camera', 'LTPO 120Hz Display', 'Titanium Frame'],
+    specs: { 'Chipset': 'Snapdragon 8 Gen 3', 'RAM': '12GB LPDDR5X', 'Storage': '256GB/512GB' }
   },
   {
     id: '7',
-    name: 'Neo Hub Pro',
-    description: '10-in-1 Thunderbolt 4 docking station for professional creative workflows.',
-    price: 28000,
+    name: 'Mazzé Slim Case',
+    description: 'Ultra-thin aramid fiber case providing robust protection without the bulk.',
+    price: 4500,
     category: 'Accessories',
-    image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&q=80&w=800',
-    features: ['Dual 4K support', '100W Power Delivery', 'SD 4.0 Reader', 'Gigabit Ethernet'],
-    specs: { 'Ports': 'Thunderbolt, HDMI, DP, USB-C', 'Material': 'Aluminum Alloy' }
+    image: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&q=80&w=800',
+    features: ['Aramid Fiber', 'MagSafe Compatible', '0.6mm Thin', 'Soft Touch Finish'],
+    specs: { 'Material': 'Aramid Fiber', 'Weight': '12g', 'Texture': 'Matte' }
   },
   {
     id: '8',
-    name: 'Mazzé Origin Console',
-    description: 'Minimalist gaming hub designed for performance and aesthetic integration.',
-    price: 65000,
+    name: 'Mazzé Play Station',
+    description: 'The next generation of gaming immersion with lightning-fast SSD and 4K output.',
+    price: 75000,
     category: 'Gaming Consoles',
-    image: 'https://images.unsplash.com/photo-1605906302474-f60df68a609e?auto=format&fit=crop&q=80&w=800',
-    features: ['4K 120FPS Support', 'Ultra-silent cooling', 'Modular storage', 'Studio integration'],
-    specs: { 'GPU': '12 TFLOPS', 'Storage': '1TB NVMe SSD', 'Memory': '16GB GDDR6' }
+    image: 'https://images.unsplash.com/photo-1605898960764-7bc6002f2674?auto=format&fit=crop&q=80&w=800',
+    features: ['4K Ray Tracing', 'DualSense Support', '1TB NVMe SSD', '8K Output Ready'],
+    specs: { 'GPU': '10.28 TFLOPS', 'CPU': '8-core Zen 2', 'Memory': '16GB GDDR6' }
   },
   {
     id: '9',
-    name: 'Cortex Pad Elite',
-    description: 'Precision gaming controller with mechanical switches and zero-latency haptics.',
-    price: 15500,
+    name: 'Pro Controller X',
+    description: 'High-performance controller with hall-effect sensors and customizable paddles.',
+    price: 15000,
     category: 'Controllers',
-    image: 'https://images.unsplash.com/photo-1592840496694-26d035b52b48?auto=format&fit=crop&q=80&w=800',
-    features: ['Mechanical buttons', 'Customizable triggers', 'Hall-effect sticks', '20h Battery'],
-    specs: { 'Connectivity': 'Wireless 2.4Ghz', 'Weight': '280g', 'Switches': 'Cortex Mechanical' }
+    image: 'https://images.unsplash.com/photo-1600080972464-8e5f3580243a?auto=format&fit=crop&q=80&w=800',
+    features: ['Hall-Effect Joysticks', 'Mechanical Buttons', 'RGB Accents', 'Wireless 2.4GHz'],
+    specs: { 'Polling Rate': '1000Hz', 'Battery': '1200mAh', 'Weight': '210g' }
   },
   {
     id: '10',
-    name: 'Mazzé Lens One',
-    description: 'A compact full-frame mirrorless camera for cinematic daily capture.',
-    price: 125000,
+    name: 'Vision 4K Studio',
+    description: 'Professional-grade mirrorless camera for cinematic video and high-resolution photography.',
+    price: 145000,
     category: 'Camera',
     image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=800',
-    features: ['4K 60fps RAW', 'In-body stabilization', 'Minimalist UI', 'Fast autofocus'],
-    specs: { 'Sensor': '24MP Full Frame', 'Mount': 'M-Mount', 'ISO Range': '100 - 51200' }
+    features: ['Full Frame Sensor', 'In-Body Stabilization', '4K 120fps', 'Dual ISO'],
+    specs: { 'Resolution': '42.4 MP', 'Mount': 'E-Mount', 'Focus': 'Real-time Eye AF' }
   }
 ];
 
 export const FAQS = [
   {
-    question: "What is your return policy?",
-    answer: "We offer a 30-day no-questions-asked return policy for all products in original packaging."
+    question: 'What is the standard delivery time?',
+    answer: 'Orders within Dhaka are typically delivered within 24-48 hours. Outside Dhaka, delivery takes approximately 3-5 business days.'
   },
   {
-    question: "How long does shipping take?",
-    answer: "Domestic orders typically arrive within 2-4 business days. International shipping takes 7-14 business days."
+    question: 'Does Mazzé Studio offer international shipping?',
+    answer: 'Currently, we focus on providing premium service within Bangladesh. International shipping is not supported at this time.'
   },
   {
-    question: "Are your products under warranty?",
-    answer: "Yes, all Mazzé Studio products come with a 12-month manufacturer warranty."
+    question: 'What is the warranty policy on gadgets?',
+    answer: 'All electronics from Mazzé Studio come with a standard 12-month studio warranty covering manufacturing defects.'
   },
   {
-    question: "Do you offer bulk discounts?",
-    answer: "For business or educational inquiries, please contact our sales team at business@mazze.studio."
+    question: 'Can I track my order in real-time?',
+    answer: 'Yes! Use your Tracking ID provided at checkout on our Tracking page to see the real-time status of your acquisition.'
   }
 ];

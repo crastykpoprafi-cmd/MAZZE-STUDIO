@@ -51,13 +51,19 @@ const AIChat: React.FC = () => {
         model: 'gemini-3-flash-preview',
         contents: userMsg,
         config: {
-          systemInstruction: `You are the Mazzé Studio customer assistant. Be sophisticated, professional, and helpful. Mazzé Studio sells premium tech. Mention prices in Taka (৳). Keep responses concise.`,
+          systemInstruction: `You are the Mazzé Studio customer concierge. Mazzé Studio is a high-end, premium tech boutique. 
+          Be sophisticated, minimalist, and extremely helpful. 
+          The user is likely tech-savvy and appreciates fine design.
+          Prices are in Taka (৳). 
+          Available categories: Earbuds, Headphones, Smart Watch, Speakers, Watches, Mobile Phones, Accessories, Gaming Consoles, Controllers, Camera.
+          Mention specific products like 'Mazzé Buds Air Pro' or 'Vision 4K Studio' when relevant. 
+          Keep responses concise and professional.`,
         },
       });
 
-      setMessages(prev => [...prev, { role: 'ai', text: response.text || 'I apologize, I am having trouble connecting.' }]);
+      setMessages(prev => [...prev, { role: 'ai', text: response.text || 'I apologize, I am having trouble connecting with the studio servers.' }]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'ai', text: 'Something went wrong. Please check your connection.' }]);
+      setMessages(prev => [...prev, { role: 'ai', text: 'The studio concierge is currently unavailable. Please try again in a moment.' }]);
     } finally {
       setIsLoading(false);
     }
@@ -70,20 +76,16 @@ const AIChat: React.FC = () => {
     { label: '৳50k – ৳100k', min: 50000, max: 100000 },
     { label: 'Above ৳100k', min: 100000, max: 999999 }
   ];
-  const priorities = ['Sound', 'Battery', 'Style', 'Performance'];
+  const priorities = ['Performance', 'Design Aesthetic', 'Reliability', 'Value'];
 
   const matches = useMemo(() => {
     if (step !== 'result') return [];
     const budgetObj = budgets.find(b => b.label === selections.budget);
     
-    // Strict filtering: Must match category first
     let filtered = PRODUCTS.filter(p => p.category === selections.category);
     
-    // Then filter by budget if possible
     if (budgetObj) {
       const budgetFiltered = filtered.filter(p => p.price >= budgetObj.min && p.price <= budgetObj.max);
-      // If no exact matches in budget, we still show category matches but maybe prioritized?
-      // For this implementation, we follow user request: "results from chosen category only"
       if (budgetFiltered.length > 0) {
         filtered = budgetFiltered;
       }
@@ -136,7 +138,7 @@ const AIChat: React.FC = () => {
               <div className="p-8 flex-1 flex flex-col">
                 {step === 'result' ? (
                   <div className="animate-in fade-in duration-700">
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-6">Your Perfect Matches</h3>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-6">Your Recommended Tools</h3>
                     <div className="space-y-4">
                       {matches.length > 0 ? matches.map(p => (
                         <div key={p.id} className="bg-white p-5 rounded-[2rem] border border-gray-100 shadow-sm flex items-center gap-5 group transition-all hover:shadow-xl hover:shadow-black/5">

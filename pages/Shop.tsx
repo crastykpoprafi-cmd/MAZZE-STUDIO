@@ -47,7 +47,7 @@ const Shop: React.FC = () => {
 
   const categories = [
     'All', 
-    'Earbuds', 
+    'Earbuds',
     'Headphones', 
     'Smart Watch', 
     'Speakers', 

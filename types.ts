@@ -31,7 +31,7 @@ export interface Order {
 }
 
 export type Category = 
-  | 'Earbuds' 
+  | 'Earbuds'
   | 'Headphones' 
   | 'Smart Watch' 
   | 'Speakers' 
