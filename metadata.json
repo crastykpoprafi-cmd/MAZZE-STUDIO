@@ -1,0 +1,8 @@
+{
+  "name": "Mazzé Studio",
+  "description": "A premium tech and gadgets e-commerce experience with a minimal, high-end design aesthetic.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
