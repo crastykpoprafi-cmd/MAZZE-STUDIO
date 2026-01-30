@@ -11,7 +11,6 @@ const Cart: React.FC = () => {
     return (
       <div className="max-w-7xl mx-auto px-4 py-32 text-center flex flex-col items-center justify-center animate-in fade-in duration-1000">
         <div className="mb-10 relative">
-          {/* Animated background rings for the icon */}
           <div className="absolute inset-0 bg-gray-50 rounded-full scale-150 opacity-20 animate-ping"></div>
           <div className="w-32 h-32 bg-gray-50 rounded-full flex items-center justify-center text-gray-300 relative z-10 shadow-inner animate-bounce duration-[3000ms]">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -66,14 +65,6 @@ const Cart: React.FC = () => {
           <h1 className="text-4xl md:text-5xl font-bold tracking-tighter">Shopping Bag</h1>
           <p className="text-gray-400 mt-2 font-medium">Review your selection before checkout.</p>
         </div>
-        <div className="hidden md:block">
-           <Link to="/shop" className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-colors flex items-center gap-2">
-             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-             </svg>
-             Keep Shopping
-           </Link>
-        </div>
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
@@ -84,7 +75,7 @@ const Cart: React.FC = () => {
               className={`group flex gap-6 p-6 bg-white border border-gray-100 rounded-[2rem] transition-all duration-500 hover:shadow-lg hover:shadow-black/5 animate-in slide-in-from-left-4 ${lastUpdatedId === item.id ? 'ring-1 ring-black/10 bg-gray-50/30' : ''}`}
             >
               <div className="w-24 h-24 sm:w-40 sm:h-40 bg-gray-50 rounded-2xl overflow-hidden shrink-0 transition-transform duration-500 group-hover:scale-[1.02]">
-                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
               </div>
               
               <div className="flex-1 flex flex-col justify-between py-1">
@@ -97,7 +88,6 @@ const Cart: React.FC = () => {
                     <button 
                       onClick={() => removeFromCart(item.id)} 
                       className="text-gray-300 hover:text-red-500 p-2 -mr-2 transition-colors rounded-full hover:bg-red-50"
-                      title="Remove item"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
@@ -108,32 +98,13 @@ const Cart: React.FC = () => {
 
                 <div className="flex flex-wrap justify-between items-end mt-4 gap-4">
                   <div className="flex items-center gap-2 bg-gray-50 rounded-full px-3 py-1.5 border border-gray-100/50">
-                    <button 
-                      onClick={() => handleUpdateQuantity(item.id, -1)} 
-                      className="text-gray-400 hover:text-black font-black w-7 h-7 flex items-center justify-center rounded-full hover:bg-white hover:shadow-sm transition-all active:scale-90"
-                    >
-                      -
-                    </button>
-                    <input 
-                      type="number" 
-                      min="1"
-                      value={item.quantity}
-                      onChange={(e) => handleQuantityInput(item.id, e.target.value)}
-                      className="text-sm font-bold w-12 text-center bg-transparent border-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
-                    <button 
-                      onClick={() => handleUpdateQuantity(item.id, 1)} 
-                      className="text-gray-400 hover:text-black font-black w-7 h-7 flex items-center justify-center rounded-full hover:bg-white hover:shadow-sm transition-all active:scale-90"
-                    >
-                      +
-                    </button>
+                    <button onClick={() => handleUpdateQuantity(item.id, -1)} className="text-gray-400 hover:text-black font-black w-7 h-7">-</button>
+                    <input type="number" value={item.quantity} onChange={(e) => handleQuantityInput(item.id, e.target.value)} className="text-sm font-bold w-12 text-center bg-transparent border-none" />
+                    <button onClick={() => handleUpdateQuantity(item.id, 1)} className="text-gray-400 hover:text-black font-black w-7 h-7">+</button>
                   </div>
-                  
                   <div className="text-right">
-                    <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">Subtotal</p>
-                    <p className={`font-bold text-lg md:text-xl tracking-tighter transition-all duration-300 ${lastUpdatedId === item.id ? 'scale-105' : 'scale-100'}`}>
-                      ৳{(item.price * item.quantity).toLocaleString()}
-                    </p>
+                    <p className="text-xs text-gray-400 font-bold uppercase mb-1">Subtotal</p>
+                    <p className="font-bold text-lg md:text-xl tracking-tighter">৳{(item.price * item.quantity).toLocaleString()}</p>
                   </div>
                 </div>
               </div>
@@ -142,54 +113,19 @@ const Cart: React.FC = () => {
         </div>
 
         <div className="lg:col-span-1">
-          <div className="bg-black text-white rounded-[2.5rem] p-10 space-y-8 sticky top-24 shadow-2xl shadow-black/20 animate-in slide-in-from-right-4 duration-700">
+          <div className="bg-black text-white rounded-[2.5rem] p-10 space-y-8 sticky top-24 shadow-2xl">
             <h3 className="text-xl font-bold tracking-tight pb-6 border-b border-white/10">Order Summary</h3>
-            
             <div className="space-y-5 text-sm font-medium">
               <div className="flex justify-between items-center">
-                <span className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Items Total</span>
-                <span className="font-bold">৳{totalPrice.toLocaleString()}</span>
+                <span className="text-gray-500 uppercase text-[10px]">Subtotal</span>
+                <span>৳{totalPrice.toLocaleString()}</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Shipping</span>
-                <span className="text-green-500 font-bold tracking-widest uppercase text-[10px]">Free</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Tax (GST)</span>
-                <span className="text-gray-400 font-bold">Included</span>
-              </div>
-              
               <div className="pt-6 border-t border-white/10 flex justify-between items-center">
-                <span className="text-xl font-bold tracking-tight">Total</span>
+                <span className="text-xl font-bold">Total</span>
                 <span className="text-3xl font-bold tracking-tighter">৳{totalPrice.toLocaleString()}</span>
               </div>
             </div>
-
-            <div className="space-y-4 pt-4">
-              <Link 
-                to="/checkout" 
-                className="group relative flex items-center justify-center w-full bg-white text-black py-5 rounded-full text-center font-bold text-xs tracking-[0.2em] uppercase transition-all hover:bg-gray-100 active:scale-95 overflow-hidden"
-              >
-                <span className="relative z-10">Proceed to Checkout</span>
-                <div className="absolute inset-0 bg-gray-200 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-              </Link>
-              
-              <p className="text-[10px] text-gray-500 text-center uppercase tracking-[0.2em] font-bold leading-relaxed opacity-60">
-                Guaranteed safe checkout with <br /> encrypted 256-bit security
-              </p>
-            </div>
-            
-            <div className="flex justify-center gap-4 pt-4 border-t border-white/5 opacity-40">
-              <div className="w-8 h-5 bg-white/20 rounded-sm"></div>
-              <div className="w-8 h-5 bg-white/20 rounded-sm"></div>
-              <div className="w-8 h-5 bg-white/20 rounded-sm"></div>
-            </div>
-          </div>
-          
-          <div className="mt-8 p-6 border border-gray-100 rounded-3xl text-center">
-             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-2">Need Help?</p>
-             <p className="text-xs text-gray-500 font-medium">Contact our concierge for <br /> personalized assistance.</p>
-             <Link to="/contact" className="text-[10px] font-bold uppercase tracking-widest text-black underline mt-3 inline-block">Consult a specialist</Link>
+            <Link to="/checkout" className="block w-full bg-white text-black py-5 rounded-full text-center font-bold text-xs uppercase tracking-[0.2em]">Proceed to Checkout</Link>
           </div>
         </div>
       </div>

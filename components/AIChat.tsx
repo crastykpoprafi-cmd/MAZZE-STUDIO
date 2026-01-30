@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { GoogleGenAI } from '@google/genai';
-import { PRODUCTS } from '../constants';
+import { useProducts } from '../context/ProductContext';
 import { Product } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
@@ -12,6 +12,7 @@ type FinderStep = 1 | 2 | 3 | 'result';
 const AIChat: React.FC = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { products } = useProducts();
   const [isOpen, setIsOpen] = useState(false);
   const [mode, setMode] = useState<Mode>('finder');
   
@@ -22,6 +23,7 @@ const AIChat: React.FC = () => {
     budget: '',
     priority: ''
   });
+  const [manualBudget, setManualBudget] = useState('');
 
   // Chat States
   const [messages, setMessages] = useState<{ role: 'user' | 'ai'; text: string }[]>([
@@ -56,7 +58,7 @@ const AIChat: React.FC = () => {
           The user is likely tech-savvy and appreciates fine design.
           Prices are in Taka (৳). 
           Available categories: Earbuds, Headphones, Smart Watch, Speakers, Watches, Mobile Phones, Accessories, Gaming Consoles, Controllers, Camera.
-          Mention specific products like 'Mazzé Buds Air Pro' or 'Vision 4K Studio' when relevant. 
+          Mention specific products when relevant. 
           Keep responses concise and professional.`,
         },
       });
@@ -70,29 +72,22 @@ const AIChat: React.FC = () => {
   };
 
   const categories = ['Earbuds', 'Headphones', 'Smart Watch', 'Speakers', 'Watches', 'Mobile Phones', 'Accessories', 'Gaming Consoles', 'Controllers', 'Camera'];
-  const budgets = [
-    { label: 'Under ৳25k', min: 0, max: 25000 },
-    { label: '৳25k – ৳50k', min: 25000, max: 50000 },
-    { label: '৳50k – ৳100k', min: 50000, max: 100000 },
-    { label: 'Above ৳100k', min: 100000, max: 999999 }
-  ];
   const priorities = ['Performance', 'Design Aesthetic', 'Reliability', 'Value'];
 
   const matches = useMemo(() => {
     if (step !== 'result') return [];
-    const budgetObj = budgets.find(b => b.label === selections.budget);
+    const budgetNum = parseFloat(selections.budget);
     
-    let filtered = PRODUCTS.filter(p => p.category === selections.category);
+    // Use the dynamic products from context instead of static constants
+    let filtered = products.filter(p => p.category === selections.category);
     
-    if (budgetObj) {
-      const budgetFiltered = filtered.filter(p => p.price >= budgetObj.min && p.price <= budgetObj.max);
-      if (budgetFiltered.length > 0) {
-        filtered = budgetFiltered;
-      }
+    if (!isNaN(budgetNum)) {
+      // STRICT FILTER: Always filter by price, no fallback to showing over-budget items
+      filtered = filtered.filter(p => p.price <= budgetNum);
     }
     
     return filtered.slice(0, 3);
-  }, [step, selections]);
+  }, [step, selections, products]);
 
   const handleBuyNow = (product: Product) => {
     addToCart(product);
@@ -103,6 +98,14 @@ const AIChat: React.FC = () => {
   const resetFinder = () => {
     setStep(1);
     setSelections({ category: '', budget: '', priority: '' });
+    setManualBudget('');
+  };
+
+  const handleBudgetSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!manualBudget || isNaN(parseFloat(manualBudget))) return;
+    setSelections({ ...selections, budget: manualBudget });
+    setStep(3);
   };
 
   return (
@@ -143,7 +146,7 @@ const AIChat: React.FC = () => {
                       {matches.length > 0 ? matches.map(p => (
                         <div key={p.id} className="bg-white p-5 rounded-[2rem] border border-gray-100 shadow-sm flex items-center gap-5 group transition-all hover:shadow-xl hover:shadow-black/5">
                           <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gray-50 border border-gray-50 shrink-0">
-                            <img src={p.image} className="w-full h-full object-cover transition-transform group-hover:scale-110" alt="" />
+                            <img src={p.images[0]} className="w-full h-full object-cover transition-transform group-hover:scale-110" alt="" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <h4 className="font-bold text-sm tracking-tight truncate">{p.name}</h4>
@@ -166,7 +169,7 @@ const AIChat: React.FC = () => {
                         </div>
                       )) : (
                         <div className="text-center py-16 bg-white rounded-[2.5rem] border border-dashed border-gray-200">
-                          <p className="text-xs text-gray-400 font-bold uppercase tracking-widest italic">No {selections.category} matches found <br/> within this budget.</p>
+                          <p className="text-xs text-gray-400 font-bold uppercase tracking-widest italic">No {selections.category} matches found <br/> within ৳{parseFloat(selections.budget).toLocaleString()}.</p>
                         </div>
                       )}
                     </div>
@@ -183,49 +186,67 @@ const AIChat: React.FC = () => {
                        <span className="text-[9px] font-black text-gray-300 uppercase tracking-[0.6em] mb-3 block">Process {step} / 3</span>
                        <h3 className="text-3xl font-bold tracking-tighter leading-tight">
                          {step === 1 && "Find your perfect gadget."}
-                         {step === 2 && "Define your budget range."}
+                         {step === 2 && "Enter your max budget."}
                          {step === 3 && "Select your core priority."}
                        </h3>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-3 overflow-y-auto max-h-[350px] pr-2 custom-scrollbar">
-                      {(step === 1 ? categories : step === 2 ? budgets.map(b => b.label) : priorities).map(opt => (
-                        <button
-                          key={opt}
-                          onClick={() => {
-                            if (step === 1) setSelections({ ...selections, category: opt });
-                            if (step === 2) setSelections({ ...selections, budget: opt });
-                            if (step === 3) setSelections({ ...selections, priority: opt });
-                            if (step < 3) setStep(step + 1 as FinderStep);
-                          }}
-                          className={`text-left p-6 rounded-[2rem] border-2 transition-all group relative overflow-hidden ${
-                            (step === 1 && selections.category === opt) || 
-                            (step === 2 && selections.budget === opt) || 
-                            (step === 3 && selections.priority === opt)
-                              ? 'bg-black text-white border-black shadow-xl shadow-black/10'
-                              : 'bg-white border-gray-100 hover:border-gray-300 hover:shadow-md'
-                          }`}
-                        >
-                          <div className="relative z-10 flex justify-between items-center">
-                            <span className="text-sm font-bold tracking-tight">{opt}</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 transition-transform group-hover:translate-x-1 ${
-                                (step === 1 && selections.category === opt) || (step === 2 && selections.budget === opt) || (step === 3 && selections.priority === opt) ? 'opacity-100' : 'opacity-0'
-                            }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                            </svg>
+                    <div className="flex-1 flex flex-col overflow-y-auto pr-2 custom-scrollbar">
+                      {step === 2 ? (
+                        <form onSubmit={handleBudgetSubmit} className="space-y-6">
+                          <div className="bg-white p-8 rounded-[2rem] border-2 border-gray-100 shadow-sm transition-all focus-within:border-black focus-within:shadow-xl focus-within:shadow-black/5">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-4">Maximum Amount (৳)</label>
+                            <input 
+                              autoFocus
+                              type="number"
+                              placeholder="e.g. 50000"
+                              value={manualBudget}
+                              onChange={(e) => setManualBudget(e.target.value)}
+                              className="w-full bg-transparent border-none p-0 text-3xl font-bold tracking-tighter focus:ring-0 placeholder-gray-100"
+                            />
                           </div>
-                        </button>
-                      ))}
+                          <button 
+                            type="submit"
+                            disabled={!manualBudget || isNaN(parseFloat(manualBudget))}
+                            className="w-full py-6 bg-black text-white rounded-full font-black text-xs uppercase tracking-[0.4em] shadow-xl shadow-black/20 hover:scale-[1.02] transition-all active:scale-95 disabled:opacity-30 disabled:hover:scale-100"
+                          >
+                            Set Budget
+                          </button>
+                        </form>
+                      ) : (
+                        <div className="grid grid-cols-1 gap-3 pb-6">
+                          {(step === 1 ? categories : priorities).map(opt => (
+                            <button
+                              key={opt}
+                              onClick={() => {
+                                if (step === 1) {
+                                  setSelections({ ...selections, category: opt });
+                                  setStep(2);
+                                }
+                                if (step === 3) {
+                                  setSelections({ ...selections, priority: opt });
+                                  setStep('result');
+                                }
+                              }}
+                              className={`text-left p-6 rounded-[2rem] border-2 transition-all group relative overflow-hidden ${
+                                (step === 1 && selections.category === opt) || (step === 3 && selections.priority === opt)
+                                  ? 'bg-black text-white border-black shadow-xl shadow-black/10'
+                                  : 'bg-white border-gray-100 hover:border-gray-300 hover:shadow-md'
+                              }`}
+                            >
+                              <div className="relative z-10 flex justify-between items-center">
+                                <span className="text-sm font-bold tracking-tight">{opt}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 transition-transform group-hover:translate-x-1 ${
+                                    (step === 1 && selections.category === opt) || (step === 3 && selections.priority === opt) ? 'opacity-100' : 'opacity-0'
+                                }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                </svg>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
-
-                    {step === 3 && selections.priority && (
-                      <button 
-                        onClick={() => setStep('result')}
-                        className="w-full mt-auto py-6 bg-black text-white rounded-full font-black text-xs uppercase tracking-[0.4em] shadow-2xl shadow-black/20 hover:scale-[1.02] transition-all active:scale-95"
-                      >
-                        Show My Match
-                      </button>
-                    )}
                   </div>
                 )}
               </div>

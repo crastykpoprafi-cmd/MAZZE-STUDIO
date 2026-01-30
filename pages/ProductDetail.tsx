@@ -1,23 +1,30 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { PRODUCTS } from '../constants';
+import { useProducts } from '../context/ProductContext';
 import { useCart } from '../context/CartContext';
 import ProductCard from '../components/ProductCard';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { products } = useProducts();
   const { addToCart } = useCart();
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isSpecsExpanded, setIsSpecsExpanded] = useState(false);
   const [mainImageLoaded, setMainImageLoaded] = useState(false);
   
-  const product = PRODUCTS.find(p => p.id === id);
+  const product = products.find(p => p.id === id);
 
   const relatedProducts = useMemo(() => {
     if (!product) return [];
-    return PRODUCTS.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
-  }, [product]);
+    return products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+  }, [product, products]);
+
+  // Reset active image when product changes
+  useEffect(() => {
+    setActiveImageIndex(0);
+  }, [id]);
 
   if (!product) {
     return (
@@ -45,17 +52,20 @@ const ProductDetail: React.FC = () => {
               </div>
             )}
             <img 
-              src={product.image} 
+              src={product.images[activeImageIndex]} 
               alt={product.name} 
               onLoad={() => setMainImageLoaded(true)}
               className={`w-full h-full object-cover transition-all duration-1000 group-hover:scale-105 ${mainImageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-110'}`} 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent pointer-events-none"></div>
           </div>
-          <div className="grid grid-cols-3 gap-6">
-             {[1, 2, 3].map(i => (
-                <div key={i} className="bg-gray-50 rounded-3xl h-32 md:h-40 overflow-hidden border border-transparent hover:border-gray-200 transition-all duration-500 cursor-pointer">
-                  <img src={product.image} className="w-full h-full object-cover grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-700" />
+          <div className="grid grid-cols-4 gap-4">
+             {product.images.map((img, i) => (
+                <div 
+                  key={i} 
+                  onClick={() => setActiveImageIndex(i)}
+                  className={`bg-gray-50 rounded-2xl aspect-square overflow-hidden border transition-all duration-500 cursor-pointer ${activeImageIndex === i ? 'border-black ring-2 ring-black/5 scale-105' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                >
+                  <img src={img} className="w-full h-full object-cover" />
                 </div>
              ))}
           </div>
@@ -68,7 +78,7 @@ const ProductDetail: React.FC = () => {
                 <span className="h-[1px] w-6 bg-black"></span>
                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">{product.category}</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-6 leading-[1.1]">{product.name}</h1>
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6 leading-[1.1]">{product.name}</h1>
             <div className="flex items-baseline gap-4">
                 <p className="text-4xl font-bold tracking-tighter">৳{product.price.toLocaleString()}</p>
                 <span className="text-[10px] font-black uppercase tracking-widest text-green-500 bg-green-50 px-3 py-1 rounded-full">In Stock</span>

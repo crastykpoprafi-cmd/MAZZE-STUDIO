@@ -39,7 +39,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           )}
           
           <img 
-            src={product.image} 
+            src={product.images[0]} 
             alt={product.name}
             onLoad={() => setImageLoaded(true)}
             className={`w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 ${imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
