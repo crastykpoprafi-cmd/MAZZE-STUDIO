@@ -140,7 +140,6 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       });
       
       if (response.status === 204 || response.ok) {
-        // Force immediate refresh from DB
         await fetchDbProducts();
       } else {
         const errorText = await response.text();
