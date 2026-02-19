@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
-import { AppProvider } from './store';
+import { AppProvider, useApp } from './store';
 import { Layout } from './components/Layout';
 import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail';
@@ -9,10 +9,12 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import AdminDashboard from './pages/Admin';
 
-// Placeholder components for brevity in this prompt context
 const Shop = () => {
     const { products } = useApp();
-    const queryParams = new URLSearchParams(window.location.hash.split('?')[1]);
+    // Getting query params for categories
+    const hash = window.location.hash;
+    const queryStr = hash.includes('?') ? hash.split('?')[1] : '';
+    const queryParams = new URLSearchParams(queryStr);
     const categoryFilter = queryParams.get('category');
     
     const filtered = categoryFilter 
@@ -26,7 +28,7 @@ const Shop = () => {
                 {filtered.map(product => (
                     <div key={product.id} className="group cursor-pointer">
                         <a href={`#/product/${product.id}`} className="relative block aspect-square overflow-hidden rounded-2xl bg-[#0a0a0a] mb-4">
-                            <img src={product.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            <img src={product.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={product.name} />
                         </a>
                         <div className="space-y-1">
                             <h3 className="font-medium text-gray-200">{product.name}</h3>
@@ -35,12 +37,15 @@ const Shop = () => {
                     </div>
                 ))}
             </div>
+            {filtered.length === 0 && (
+                <div className="text-center py-20 text-gray-500">
+                    No products found in this category.
+                </div>
+            )}
         </div>
     );
 };
 
-// Simple Dashboard for Orders
-import { useApp } from './store';
 const UserDashboard = () => {
     const { orders } = useApp();
     return (
@@ -57,7 +62,7 @@ const UserDashboard = () => {
                                 <p className="font-bold">{o.customerName}</p>
                                 <p className="text-sm text-gray-400">{o.items.length} items • ৳{o.total.toLocaleString()}</p>
                             </div>
-                            <span className="px-3 py-1 bg-white/5 rounded text-[10px] font-bold uppercase tracking-widest">{o.status}</span>
+                            <span className="px-3 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-bold uppercase tracking-widest">{o.status}</span>
                         </div>
                     ))}
                 </div>
@@ -79,8 +84,8 @@ const App: React.FC = () => {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/dashboard" element={<UserDashboard />} />
-            <Route path="/login" element={<div className="p-24 text-center">Login Feature Coming Soon</div>} />
-            <Route path="/track" element={<div className="p-24 text-center">Tracking Feature Coming Soon</div>} />
+            <Route path="/login" element={<div className="p-24 text-center text-gray-500">Login Feature Coming Soon</div>} />
+            <Route path="/track" element={<div className="p-24 text-center text-gray-500">Tracking Feature Coming Soon</div>} />
           </Routes>
         </Layout>
       </Router>
