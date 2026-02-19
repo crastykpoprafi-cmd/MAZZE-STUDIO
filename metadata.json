@@ -1,0 +1,8 @@
+{
+  "name": "MAZZE STUDIO - Luxury E-Commerce",
+  "description": "A premium, Apple-inspired e-commerce platform for high-end electronics and accessories, featuring a sleek black and white UI, smart search, and a PIN-protected admin panel.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
